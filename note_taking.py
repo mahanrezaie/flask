@@ -41,3 +41,14 @@ def tag_exists(tag, notes):
             return True
     return False
 
+def validate_note_json(data):
+    required_keys = ["field", "id", "content", "tag"]
+
+    # Check if all required keys exist
+    for key in required_keys:
+        if key not in data:
+            return False
+
+
+    return True
+

@@ -1,5 +1,5 @@
 from flask import Flask, request
-from note_taking import json_load, check_list_exist, tag_exists, get_timestamp, json_dump
+from note_taking import json_load, validate_note_json, check_list_exist, tag_exists, get_timestamp, json_dump
 import json
 
 app = Flask(__name__)
@@ -8,6 +8,9 @@ app = Flask(__name__)
 @app.route("/add", methods=["POST"])
 def add():
     check_list_exist()
+    validation = validate_note_json()
+    if validation == False:
+        return f"Invalid JSON: file should have Field, id, title, content, tag", 400
     user_post = request.json # getting user payload
     list_content = json_load("notes-list.json")
 
@@ -53,22 +56,34 @@ def list():
 def delete(note_id: str):
     list_content = json_load("notes-list.json")
     if note_id not in list_content:
-        return f"note {note_id} does not exists", 400
+        return f"note {note_id} does not exists", 404
 
 @app.route("/update/<note_id>", methods=["PUT"])
 def update(note_id):
+    user_put = request.json
     list_content = json_load("notes-list.json")
+    timestamp = get_timestamp()
     if note_id not in list_content:
-        return f"note {note_id} does not exists", 400
+        return f"note {note_id} does not exists", 404
+
+    file_name = list_content[f"{note_id}"]["file_name"]
+    # open note
+    note_data = json_load(f"json_notes/{file_name}")
+    # select created_at from json
+    created_at = note_data["created_at"]
+    user_put["created_at"] = created_at
+    user_put["update_at"] = timestamp
+
+    return user_put
 
 
 @app.route("/get-note/<note_id>", methods=["GET"])
-def get_note(note_id: str):
+def get_note(note_id):
     list_content = json_load("notes-list.json")
     if note_id not in list_content:
         return f"note {note_id} does not exists", 404
     else:
-        content = json_load(f"notes/{list_content[note_id]["file_name"]}")
+        content = json_load(f"json_notes/{list_content[note_id]["file_name"]}")
         return content, 200
         
         

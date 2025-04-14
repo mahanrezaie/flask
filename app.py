@@ -1,4 +1,6 @@
 from flask import Flask
+from note_taking import read_json
+import os
 
 app = Flask(__name__)
 
@@ -9,7 +11,8 @@ def add():
 
 @app.route("/list", methods=["GET"])
 def list():
-    return f"hello"
+    content = os.listdir("notes")
+    return content
 
 @app.route("/delete/<note_id>", methods=["DELETE"])
 def delete():

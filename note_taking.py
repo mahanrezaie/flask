@@ -42,13 +42,17 @@ def tag_exists(tag, notes):
     return False
 
 def validate_note_json(data):
-    required_keys = ["field", "id", "content", "tag"]
+    required_keys = {"field", "id", "content", "tag"}
 
-    # Check if all required keys exist
-    for key in required_keys:
-        if key not in data:
-            return False
+    # Check for missing keys
+    if set(data.keys()) != required_keys:
+        extra = set(data.keys()) - required_keys
+        missing = required_keys - set(data.keys())
+        if missing:
+            return False, f"Missing keys: {', '.join(missing)}"
+        if extra:
+            return False, f"Unexpected keys: {', '.join(extra)}"
+        return False, "Invalid JSON structure."
 
-
-    return True
+    return True, "Valid JSON structure"
 

@@ -1,5 +1,5 @@
 from flask import Flask, request
-from note_taking import json_load, check_list_exist, read_json, get_timestamp, list_directory, json_dump
+from note_taking import json_load, check_list_exist, read_json, get_timestamp, json_dump
 import json
 
 app = Flask(__name__)
@@ -38,9 +38,8 @@ def add():
 
 @app.route("/list", methods=["GET"])
 def list():
-    content = list_directory("notes")
-    json_dump(content, "notes-list.json") # save files with id in notes-list
-    return content
+    list_content = json_load("notes-list.json")
+    return list_content
 
 @app.route("/delete/<note_id>", methods=["DELETE"])
 def delete():

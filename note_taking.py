@@ -36,9 +36,6 @@ def json_load(file):
         return(data)
     
 def tag_exists(tag, notes):
-    return any(note["file_name"] == f"{tag}.json" for note in notes.values())
-
-def tag_exists(tag, notes):
     for note in notes.values():
         if note["file_name"] == f"{tag}.json":
             return True

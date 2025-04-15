@@ -6,7 +6,6 @@ import copy
 
 app = Flask(__name__)
 
-
 @app.route("/add", methods=["POST"])
 def add():
     check_list_exist()
@@ -166,3 +165,7 @@ def export():
         "skipped_existing": skipped,
         "total_notes": len(clean_files)
     }, 200
+
+if __name__ == "__main__":
+    app.run(debug=True)
+

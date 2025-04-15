@@ -98,7 +98,7 @@ def update(note_id):
     if user_put["id"] != note_id:
         del list_content[note_id]
         list_content[user_put["id"]] = f"{user_put["tag"]}.json"
-        json_dump(list_content, "")
+        json_dump(list_content, "notes-list.json")
 
 
 

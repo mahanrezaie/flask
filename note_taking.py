@@ -56,3 +56,11 @@ def validate_note_json(data):
 
     return True, "Valid JSON structure"
 
+def find_json_changes(data1, data2, keys_to_compare):
+    different_keys = []
+    for key in keys_to_compare:
+        if data1[key] != data2[key]:
+            different_keys.append(key)
+    return different_keys
+
+

@@ -3,6 +3,8 @@ import yaml
 import os
 from datetime import datetime
 
+def delete_file(file):
+    os.remove(file)
 
 def get_timestamp():
     return datetime.now().strftime("%Y%m%d-%H:%M:%S")
@@ -37,7 +39,7 @@ def json_load(file):
     
 def tag_exists(tag, notes):
     for note in notes.values():
-        if note["file_name"] == f"{tag}.json":
+        if note == f"{tag}.json":
             return True
     return False
 
@@ -56,11 +58,12 @@ def validate_note_json(data):
 
     return True, "Valid JSON structure"
 
-def find_json_changes(data1, data2, keys_to_compare):
+def find_key_changes(data1, data2, keys_to_compare):
     different_keys = []
     for key in keys_to_compare:
         if data1[key] != data2[key]:
             different_keys.append(key)
     return different_keys
+
 
 

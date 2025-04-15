@@ -1,5 +1,6 @@
 from flask import Flask, request
-from note_taking import find_key_changes, json_load, validate_note_json, check_list_exist, tag_exists, get_timestamp, json_dump, find_key_changes, delete_file
+import os
+from note_taking import find_key_changes, json_load, validate_note_json, check_list_exist, tag_exists, get_timestamp, json_dump, find_key_changes, delete_file, json_to_yaml
 import json
 import copy
 
@@ -136,9 +137,32 @@ def get_note(note_id):
         content = json_load(f"json_notes/{list_content[note_id]}")
         return content, 200
         
-        
-
 @app.route("/export", methods=["GET"])
 def export():
-    return f"hello"
+    list_content = json_load("notes-list.json")  
+    file_names = [value for value in list_content.values()]
+    clean_files = [f.removesuffix(".json") for f in file_names]
 
+
+    exported = 0
+    skipped = 0
+
+    for name in clean_files:
+        json_file_path = f"json_notes/{name}.json"
+        yaml_file_path = f"yaml_notes/{name}.yaml"
+
+        if os.path.exists(yaml_file_path):
+            skipped += 1
+            continue  # Skip if YAML already exported
+
+        if os.path.exists(json_file_path):
+            with open(json_file_path, "r") as f:
+                json_data = f.read()
+                json_to_yaml(json_data, yaml_file_path)
+                exported += 1
+
+    return {
+        "exported": exported,
+        "skipped_existing": skipped,
+        "total_notes": len(clean_files)
+    }, 200

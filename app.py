@@ -57,10 +57,10 @@ def list():
 @app.route("/delete/<note_id>", methods=["DELETE"])
 def delete(note_id: str):
     list_content = json_load("notes-list.json")
-    file_name = list_content[note_id]
     if note_id not in list_content:
         return f"note {note_id} does not exists", 404
     else:
+        file_name = list_content[note_id]
         delete_file(f"json_notes/{file_name}")
         del list_content[note_id]
         json_dump(list_content, "notes-list.json")

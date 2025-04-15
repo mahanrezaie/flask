@@ -3,6 +3,12 @@ import yaml
 import os
 from datetime import datetime
 
+def json_to_yaml(data, output_file):
+    output_file = open(output_file, "w")
+    json_obj = json.loads(data)
+    yaml.dump(json_obj, output_file)
+
+
 def delete_file(file):
     os.remove(file)
 
